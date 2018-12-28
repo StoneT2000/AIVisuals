@@ -1,0 +1,64 @@
+:root {
+  
+}
+.brief {
+  font-size:1.5rem;
+  font-family: 'open sans';
+  width: 80%;
+  margin-left:10%;
+}
+.projects {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 90%;
+  margin-left: 5%;
+}
+.item{
+  margin:10px;
+  background-color: var(--white);
+  width:100%;
+
+  border-radius:px;
+  position: relative;
+  
+  
+  text-align: left;
+}
+.item:last-child {
+}
+.item.empty {
+  background-color:transparent;
+}
+.item-title {
+  font-size: 3rem;
+  color: var(--red);
+  font-family: 'dosis-light';
+  text-align: left;
+  padding-left:20px;
+  border-left: 10px solid var(--red);
+}
+.item-parts {
+  
+}
+.item-desc {
+  font-family: 'dosis-light';
+  margin-top:40px;
+  padding-left:20px;
+  position: relative;
+  display:inline-block;
+  text-align: left;
+  font-size: 1.25rem;
+
+}
+.item-picture {
+  position: relative;
+  display:inline-block;
+}
+.item-picture img{
+  width:100%;
+}
+.item-btn-container {
+  position: relative;
+  text-align: left;
+}
