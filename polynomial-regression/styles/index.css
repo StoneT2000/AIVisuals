@@ -1,0 +1,38 @@
+body {
+  font-family: 'dosis-medium';
+}
+.mainContent {
+  width:100%;
+}
+.container-fluid {
+  padding:0px;
+}
+@font-face{
+  font-family: 'dosis-medium';
+  src:url('../lib/fonts/Dosis-Medium.ttf');
+}
+.buttonsSection button {
+  width: 140px;
+}
+.chartContainer, #canvas {
+  width: 40vw;
+  height:400px;
+  display: inline-block;
+  position: relative;
+  padding: 0px;
+}
+.console {
+  width: 56vw;
+  margin-left: 2vw;
+  height:400px;
+  border: 2px solid #333333;
+  border-radius:4px;
+  display:inline-block;
+  position: relative;
+  padding: 0px;
+}
+.inputLabel {
+  width:100%;
+  text-align: right;
+  padding-right:0px;
+}
