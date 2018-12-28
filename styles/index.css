@@ -1,9 +1,26 @@
-:root {
-  
+.title {
+  font-size:4rem;
+  padding-bottom: 10px;
+  padding-left:28px;
+  position: absolute;
+}
+.titleContainer {
+  position: relative;
+  width:100%;
+  height:150px;
+}
+#redLine {
+  width: 287px;
+  height:0.31rem;
+  top:calc(4.59rem);
+  left: 28px;
+  position: absolute;
+  border-radius:5px;
+  border-bottom: 0.33rem dotted var(--red);
 }
 .brief {
   font-size:1.5rem;
-  font-family: 'open sans';
+  font-family: 'open sans', sans-serif;
   width: 80%;
   margin-left:10%;
 }
@@ -18,7 +35,6 @@
   margin:10px;
   background-color: var(--white);
   width:100%;
-
   border-radius:px;
   position: relative;
   
@@ -36,7 +52,7 @@
   font-family: 'dosis-light';
   text-align: left;
   padding-left:20px;
-  border-left: 10px solid var(--red);
+  border-left: 4px solid var(--red);
 }
 .item-parts {
   
@@ -49,7 +65,6 @@
   display:inline-block;
   text-align: left;
   font-size: 1.25rem;
-
 }
 .item-picture {
   position: relative;
@@ -61,4 +76,17 @@
 .item-btn-container {
   position: relative;
   text-align: left;
+}
+@media only screen and (max-width:767px) {
+  .title {
+    font-size:3rem;
+  }
+  #redLine {
+    width: 216px;
+    top:calc(3.35rem);
+    left: 28px;
+    position: absolute;
+    border-radius:5px;
+    border-bottom: 0.24rem dotted var(--red);
+  }
 }

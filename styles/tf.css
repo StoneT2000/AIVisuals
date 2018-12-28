@@ -2,10 +2,15 @@
   --red: rgb(244,78,63);
   --red2: #d14336;
   --red3: #c43f33;
-  --tf-orange:rgb(239,108,0)
+  --tf-orange:rgb(239,108,0);
+  --tf-orange-light:rgb(241,134,46);
+  --tf-orange-light-fade:rgba(241,134,46,0.5);
+  --black: #212529;
+  --white: #fefefe;
 }
 body {
-  font-family: 'dosis-medium';
+  font-family: 'dosis-medium','open-sans', sans-serif;
+  background-color: #fefefe;
 }
 @font-face{
   font-family: 'dosis-medium';
@@ -19,7 +24,6 @@ input {
   text-align: center;
   width: 100px;
   border:none;
-
   border-bottom: 2px solid rgba(255,98,73,0.5);
   transition: border-bottom 0.2s;
 }
@@ -65,6 +69,14 @@ input:focus {
   text-decoration: none;
   color:#227cb7;
   border-bottom: 2px solid rgba(66,162,225,1);
+}
+.link-tf{
+  color: var(--tf-orange-light) !important;
+  border-bottom: 2px solid var(--tf-orange-light-fade) !important;
+}
+.link-tf:hover {
+  color:var(--tf-orange) !important;
+  border-bottom: 2px solid var(--tf-orange) !important;
 }
 .btn-link {
   

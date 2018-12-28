@@ -17,8 +17,11 @@
 <body>
   <div class="container-fluid" style='margin-top: 20px'>
     <!--All page content goes here -->
-    <h1>TensorFlow<span style='color:var(--red)'>.js</span> Projects</h1>
-    <p class='brief'>These are just a collection of my projects using <span style='color:rgb(66,133,244)'>G</span><span style='color:rgb(219,68,55)'>o</span><span style='color:rgb(244,160,0)'>o</span><span style='color:rgb(66,133,244)'>g</span><span style='color:rgb(15,157,88)'>l</span><span style='color:rgb(219,68,55)'>e</span><span style='color:rgb(66,133,244)'>'</span><span style='color:rgb(66,133,244)'>s</span> <span style='color:var(--tf-orange)'>TensorFlow.js</span></p>
+    <div class="titleContainer">
+      <h1 class='title'>TensorFlow<span style='color:var(--red)'>.js</span> Projects</h1>
+      <div id="redLine"></div>
+    </div>
+    <p class='brief'>These are just a collection of my projects using <span style='color:rgb(66,133,244)'>G</span><span style='color:rgb(219,68,55)'>o</span><span style='color:rgb(244,160,0)'>o</span><span style='color:rgb(66,133,244)'>g</span><span style='color:rgb(15,157,88)'>l</span><span style='color:rgb(219,68,55)'>e</span><span style='color:rgb(66,133,244)'>'</span><span style='color:rgb(66,133,244)'>s</span> <span><a class='link-tf' href="https://js.tensorflow.org/">TensorFlow.js</a></span></p>
     <p class='brief'>The purpose is to help better visualize machine learning by visualizing the learning process</p>
     <div class="mainContent">
       <div class='projects'>
@@ -26,12 +29,13 @@
           <div class='item-title'>Polynomial Fitter</div>
           <div class='row item-parts'>
             <div class='item-desc col-md-6'>
-              This is a simple application of TensorFlow.js to curve fitting. Using the ideas of an predictor, optimizer, and loss function, we fit a curve onto a set of generated data. This was adopted from Google's example of <a href="https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core">fitting a curve to synthetic data</a>          
+              This is a simple application of TensorFlow.js to curve fitting. Using the ideas of an predictor, optimizer, and loss function, we fit a curve onto a set of generated data. This was adopted from Google's example of <a href="https://github.com/tensorflow/tfjs-examples/tree/master/polynomial-regression-core">fitting a curve to synthetic data.</a>          
               <br>
               <br>
               <div class='item-btn-container'>
                 <a class='btn-link' href='/TensorFlow/polynomialFitter/'><button class='btn btn-primary'>Try it Out Here</button></a>
               </div>
+              <br>
             </div>
             <div class='item-picture col-md-6'>
               <img src='images/polyfit.png' class='shadow-sm p-3 mb-5 bg-white rounded'>
