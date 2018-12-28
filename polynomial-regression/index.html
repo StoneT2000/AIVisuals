@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <!-- Make sure mobile width is width of mobile viewport-->
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <!--<meta name="viewport" content="width=device-width,initial-scale=1.0">-->
   <title>Using ML to fit curves</title>
   <!-- Style sheets: Including Bootstrap and Font Awesome (svg icons) -->
   <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">-->
@@ -26,19 +26,24 @@
   <script src="https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js"></script>
 </head>
 <body>
-  <div class="container-fluid" style='margin-bottom: 100px;'>
+  <div class="container-fluid" style='margin-top:20px'>
     <!--All page content goes here -->
     <div id='popperDiv'>
       <div class='arrow'></div>
       <div class='popperText'>Oops! You got NaN<br>Try reducing learning rate</div>
     </div>
     <div class="mainContent">
-      <h1>Using Machine Learning to Fit Curves</h1>
+      <h1 style='padding-left: 2%'>Using Machine Learning to Fit Curves</h1>
       <div class="displaySection">
         <div class="chartContainer">
           <canvas id='chart'></canvas>
         </div>
         <div class="console">
+          <div class='outputMessages'>
+          </div>
+          <div class='commandLine indicator'>
+            ~ ML.fit$
+          </div>
         </div>
       </div>
       <div class='buttonsSection'>
@@ -48,7 +53,7 @@
       </div>
       <div class="options">
         <div class='row' style='font-size:1.25em;text-align: center;'>
-          <div class='col-md-4'>
+          <div class='col-md-5'>
             Generating Parameters
           </div>
           <div class='col-md-4'>
@@ -59,31 +64,33 @@
           </div>
         </div>
         <div class='row'>
-          <div class="col-md-4 generatingParameters"> 
-            <div class='row'>
-              <span style='font-size:1.25rem;'>Generating <input id="numPoints" style='width:50px;'> random data points based on the following function: <br>ax<sup>3</sup> + bx<sup>2</sup> + cx + d<br>
-              </span>
+          <div class="col-md-5 generatingParameters"> 
               <div class='row'>
-                <div class='col-md-2'><label class='inputLabel'>a:</label></div>
-                <div class='col-md-10'><input id="coeff0"></div>
+               <div class='col-md-12'>
+                <span style='font-size:1.25rem;'>Generating <input id="numPoints" style='width:50px;'> random data points based on the following function: <br>ax<sup>3</sup> + bx<sup>2</sup> + cx + d<br>
+                </span>
+               </div>
               </div>
               <div class='row'>
+                <div class='col-md-2'><label class='inputLabel'>a:</label></div>
+                <div class='col-md-2'><input id="coeff0"></div>
                 <div class='col-md-2'><label class='inputLabel'>b:</label></div>
-                <div class='col-md-10'><input id="coeff1"></div>
+                <div class='col-md-2'><input id="coeff1"></div>
               </div>
               <div class='row'>
                 <div class='col-md-2'><label class='inputLabel'>c:</label></div>
-                <div class='col-md-10'><input id="coeff2"></div>
-              </div>
-              <div class='row'>
+                <div class='col-md-2'><input id="coeff2"></div>
                 <div class='col-md-2'><label class='inputLabel'>d:</label></div>
-                <div class='col-md-10'><input id="coeff3"></div>
-              </div>
-              <span style='margin-top:10px;'>Data points are scattered by factor of <input id="displacementFactor" style='width:50px;'></span>
-
-
-              <span>x values range from <input id="x0" style='width:50px;'> to <input id="x1" style='width:50px;'></span>
+                <div class='col-md-2'><input id="coeff3"></div>
             </div>
+               <div class='row'>
+                 <div class='col-md-12'>
+              <span style='margin-top:10px;'>Data points are scattered by factor of <input id="displacementFactor" style='width:50px;'></span>
+                 </div>
+              </div>
+             <div class='row'>
+              <span>x values range from <input id="x0" style='width:50px;'> to <input id="x1" style='width:50px;'></span>
+              </div>
           </div>
           <div class="col-md-4 modelParameters">
             <div class='row'>
@@ -126,9 +133,12 @@
         
     </div>
   </div>
+  <div style="height:50px;">
+  </div>
   <!--<div class="footer_fascade">
   </div>-->
-  <footer class="footer">
+  
+  <footer class="footer" style='border-top:2px solid rgba(244,78,63,1);'>
     <span style="margin-right:4px;">By Stone T. @ Github</span><a href="https://github.com/StoneT2000"><svg height="24" width="24" class="octicon octicon-mark-github" viewBox="0 0 20 20" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a><span style="border-right: 1px solid #212529;margin:0px 10px 0px 10px;"></span><span style="margin-right:4px;">Email</span><a href="mailto:stoneztao@gmail.com"><svg width="28" height="28" class="octicon octicon-mail" viewBox="0 0 20 18" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M0 4v8c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1zm13 0L7 9 1 4h12zM1 5.5l4 3-4 3v-6zM2 12l3.5-3L7 10.5 8.5 9l3.5 3H2zm11-.5l-4-3 4-3v6z"></path></svg></a>
   </footer>
 </body>

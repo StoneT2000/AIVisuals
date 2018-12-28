@@ -2,6 +2,9 @@ var chart;
 var ctx;
 var lrPopper;
 $(document).ready(function () {
+  
+  setInterval(function(){$(".commandLine").addClass('indicator')},1000)
+  setTimeout(function(){setInterval(function(){$(".commandLine").removeClass('indicator')},1000)},500)
   lrReference = document.getElementById('learningRate');
   popperDiv = document.getElementById('popperDiv')
   lrPopper = new Popper(lrReference, popperDiv, {
@@ -68,6 +71,10 @@ $(document).ready(function () {
       randomizeTrainingVars([x0,x1]);
       xs = tf.tensor2d(randomXs, [randomXs.length, 1]);
       ys = tf.tensor2d(randomYs, [randomYs.length, 1]);
+      
+      
+      log('~ ML.fit$ generateData('+numPoints+', '+displacement+', '+ '['+x0+', '+x1+'])')
+      $(".commandLine").css('display','none');
       constructDataPoints().then(function(){
         chart.data.datasets[0].data = predictedData;
         chart.data.datasets[1].data = givenData;
@@ -75,6 +82,8 @@ $(document).ready(function () {
         enable('generateData', 'Generate Data')
         generating = false;
         enable('fitCurve');
+        $(".commandLine").css('display','block');
+        scrollDown();
         updateResults();
       })
     }
@@ -89,7 +98,9 @@ $(document).ready(function () {
       let bsize = parseInput('batchSize','int')
       let maxEpoch = parseInput('maxEpoch','int')
       let learningRate = parseInput('learningRate','float')
-      animateChart(xs, ys, bsize, 1, maxEpoch, learningRate);
+      log('~ ML.fit$ fitCurve(xs,ys, '+bsize+', '+maxEpoch+', '+learningRate+')')
+      $(".commandLine").css('display','none');
+      setTimeout(function(){animateChart(xs, ys, bsize, 1, maxEpoch, learningRate)},500)
     }
   });
   $("#stopTraining").on('click', function(){
@@ -116,7 +127,7 @@ async function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate)
     finishTraining();
     return;
   }
-  log('Epoch ' + currentEpoch + ' / ' + maxEpoch)
+  
   inTraining = true;
   train(xs, ys, bsize, learningRate).then(function(){
     constructDataPoints().then(function(){
@@ -124,6 +135,7 @@ async function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate)
       chart.data.datasets[1].data = givenData;
       chart.update();
       updateResults();
+      log('Epoch ' + currentEpoch + ' / ' + maxEpoch)
       return animateChart(xs, ys, bsize, currentEpoch+1, maxEpoch, learningRate)
     });
   })
@@ -132,7 +144,13 @@ async function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate)
 }
 
 function log(message){
-  $(".console").append('<span class="consoleMessageLine">' + message + '</span>');
+  $(".outputMessages").append('<span class="consoleMessageLine">' + message + '</span>');
+  var elem = $(".console")[0];
+  elem.scrollTop = elem.scrollHeight;
+}
+function scrollDown(){
+  var elem = $(".console")[0];
+  elem.scrollTop = elem.scrollHeight;
 }
 function disable(id, msg) {
   $("#" + id).addClass("disabled");
@@ -157,19 +175,21 @@ function parseInput(id, type){
 function stopTraining() {
   stopAnimation = true;
   log('Stopping training...');
+  $(".commandLine").css('display','block');
+  scrollDown();
 }
 async function updateResults() {
   let logError = false;
   for (let i = 0; i < coefficients.length; i++) {
     let thisCoeff = await tfCoeffs[i].data();
-    $("#rCoeff" + i).val(thisCoeff[0]);
+    $("#rCoeff" + i).val(thisCoeff[0].toFixed(4));
     if (isNaN(thisCoeff[0])){
       logError = true;
     }
   }
   let predsYs = predict(xs);
   let rmse = await loss(predsYs, ys).data();
-  $("#rmse").val(rmse[0]);
+  $("#rmse").val(rmse[0].toFixed(4));
   if (logError) {
     //Try reducing learning rate
     $("#popperDiv").css("opacity", "1");
@@ -182,4 +202,6 @@ async function finishTraining(){
   updateResults();
   enable('fitCurve', 'Fit Curve');
   enable('generateData');
+  $(".commandLine").css('display','block');
+  scrollDown();
 }
