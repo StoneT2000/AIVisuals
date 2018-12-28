@@ -1,9 +1,27 @@
 var chart;
 var ctx;
+var lrPopper;
 $(document).ready(function () {
-  
+  lrReference = document.getElementById('learningRate');
+  popperDiv = document.getElementById('popperDiv')
+  lrPopper = new Popper(lrReference, popperDiv, {
+    placement: 'bottom',
+  });
+  $("#popperDiv").css("opacity", "0");
+
   //generateSyntheticData(50, 0.2, polyC);
+  $("#batchSize").val(30);
+  $("#learningRate").val(0.35);
+  $("#maxEpoch").val(5);
+  for (let i = 0; i < coefficients.length; i++) {
+    $("#coeff" + i).val(coefficients[i]);
+  }
+  $("#numPoints").val(50);
+  $("#displacementFactor").val(0.2);
+  $("#x0").val(-1.0);
+  $("#x1").val(1.0);
   constructDataPoints().then(function(){
+    updateResults();
     ctx = document.getElementById('chart').getContext('2d');
     chart = new Chart(ctx, {
       // The type of chart we want to create
@@ -19,7 +37,7 @@ $(document).ready(function () {
           data: predictedData,
             showLine:true,
             fill:false,
-            radius:0,
+            pointRadius:0,
             hitRadius:3
             
           },{
@@ -37,15 +55,27 @@ $(document).ready(function () {
   $("#generateData").on('click', function(){
     if (inTraining === false && generating === false) {
       disable('generateData', 'Generating...')
+      disable('fitCurve')
       generating = true;
-      let generated = generateSyntheticData()
-      randomizeTrainingVars();
-      generating = !generated;
+      for (let i = 0; i < coefficients.length; i++) {
+        coefficients[i] = parseInput('coeff' + i, 'float');
+      }
+      let numPoints = parseInput('numPoints','int');
+      let displacement = parseInput('displacementFactor', 'float');
+      let x0 = parseInput('x0','float');
+      let x1 = parseInput('x1','float');
+      generateSyntheticData(numPoints, displacement, polyC,[x0,x1])
+      randomizeTrainingVars([x0,x1]);
+      xs = tf.tensor2d(randomXs, [randomXs.length, 1]);
+      ys = tf.tensor2d(randomYs, [randomYs.length, 1]);
       constructDataPoints().then(function(){
         chart.data.datasets[0].data = predictedData;
         chart.data.datasets[1].data = givenData;
         chart.update();
         enable('generateData', 'Generate Data')
+        generating = false;
+        enable('fitCurve');
+        updateResults();
       })
     }
   });
@@ -54,23 +84,36 @@ $(document).ready(function () {
       stopAnimation = false;
       disable('generateData')
       disable('fitCurve', 'Fitting...')
+      
+      
+      let bsize = parseInput('batchSize','int')
+      let maxEpoch = parseInput('maxEpoch','int')
+      let learningRate = parseInput('learningRate','float')
+      animateChart(xs, ys, bsize, 1, maxEpoch, learningRate);
     }
-  })
+  });
+  $("#stopTraining").on('click', function(){
+    stopTraining()
+  });
+  $("#learningRate").on('focus', function(){
+    $("#popperDiv").css('opacity', 0);
+  });
 })
 
 var stopAnimation = false;
 var inTraining = false;
 var generating = false;
-function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate) {
+async function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate) {
   if (currentEpoch === 1) {
-    log('Starting training')
+    log('Starting training with batchsize = ' + bsize + ', ' + maxEpoch + ' epochs, learning rate = ' + learningRate);
   }
   
   if (currentEpoch === maxEpoch + 1) {
-    
+    finishTraining();
     return;
   }
   if (stopAnimation === true) {
+    finishTraining();
     return;
   }
   log('Epoch ' + currentEpoch + ' / ' + maxEpoch)
@@ -80,6 +123,7 @@ function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate) {
       chart.data.datasets[0].data = predictedData;
       chart.data.datasets[1].data = givenData;
       chart.update();
+      updateResults();
       return animateChart(xs, ys, bsize, currentEpoch+1, maxEpoch, learningRate)
     });
   })
@@ -88,7 +132,7 @@ function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate) {
 }
 
 function log(message){
-  console.log(message);
+  $(".console").append('<span class="consoleMessageLine">' + message + '</span>');
 }
 function disable(id, msg) {
   $("#" + id).addClass("disabled");
@@ -99,6 +143,43 @@ function enable(id, msg){
   if (msg) $("#" + id).text(msg);
 }
 function parseInput(id, type){
-  if (type === 'int') return parseInt($("#"+id).val())
-  if (type === 'float') return parseFloat($("#"+id).val())
+  let val = 0;
+  if (type === 'int'){
+    val = parseInt($("#"+id).val());
+    
+  }
+  if (type === 'float'){
+    val = parseFloat($("#"+id).val());
+  }
+  $("#" + id).val(val);
+  return val;
+}
+function stopTraining() {
+  stopAnimation = true;
+  log('Stopping training...');
+}
+async function updateResults() {
+  let logError = false;
+  for (let i = 0; i < coefficients.length; i++) {
+    let thisCoeff = await tfCoeffs[i].data();
+    $("#rCoeff" + i).val(thisCoeff[0]);
+    if (isNaN(thisCoeff[0])){
+      logError = true;
+    }
+  }
+  let predsYs = predict(xs);
+  let rmse = await loss(predsYs, ys).data();
+  $("#rmse").val(rmse[0]);
+  if (logError) {
+    //Try reducing learning rate
+    $("#popperDiv").css("opacity", "1");
+
+
+  }
+}
+async function finishTraining(){
+  inTraining = false;
+  updateResults();
+  enable('fitCurve', 'Fit Curve');
+  enable('generateData');
 }

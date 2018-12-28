@@ -1,3 +1,8 @@
+:root {
+  --red: rgb(244,78,63);
+  --red2: #d14336;
+  --red3: #c43f33;
+}
 body {
   font-family: 'dosis-medium';
 }
@@ -10,6 +15,68 @@ body {
 @font-face{
   font-family: 'dosis-medium';
   src:url('../lib/fonts/Dosis-Medium.ttf');
+}
+@font-face{
+  font-family: 'dosis-light';
+  src:url('../lib/fonts/Dosis-Light.ttf');
+}
+.options {
+  width:90%;
+  margin-left: 5%;
+  font-size:1.25rem;
+}/*
+.options .row div {
+  padding-left:0px;
+  padding-right:0px;
+}*/
+.options label{
+  font-size:1.25rem;
+}
+.options input {
+  text-align: center;
+  width: 150px;
+  border:none;
+
+  border-bottom: 2px solid rgba(255,98,73,0.5);
+  transition: border-bottom 0.2s;
+}
+.options input:hover{
+  border-bottom: 2px solid rgba(244,78,63,0.8);
+}
+.options input:focus {
+  border-bottom: 2px solid rgba(244,78,63,1);
+}
+.btn-primary.disabled {
+  background-color: var(--red);
+  border-color: var(--red);
+}
+.btn-primary {
+  background-color: var(--red);
+  border-color: var(--red);
+}
+.btn-primary:hover {
+  background-color: var(--red2);
+  border-color: var(--red2);
+}
+.btn-primary:active {
+  background-color: var(--red3);
+  border-color: var(--red3);
+}
+.btn-primary:focus{
+  background-color: var(--red2);
+  border-color: var(--red2);
+  box-shadow: 0 0 0 .2rem rgba(209,67,54,.5);
+}
+.btn-primary.disabled:active, .btn-primary.disabled:hover {
+    background-color: var(--red);
+  border-color: var(--red);
+}
+
+.results input {
+  width:230px;
+}
+.modelParameters input {
+  width: 100px;
 }
 .buttonsSection button {
   width: 140px;
@@ -28,11 +95,45 @@ body {
   border: 2px solid #333333;
   border-radius:4px;
   display:inline-block;
-  position: relative;
-  padding: 0px;
+  position: absolute;
+  padding: 10px;
+  overflow-y:scroll;
 }
-.inputLabel {
+.consoleMessageLine {
+  display: block;
+  position: relative;
+}
+.row {
+  margin-top: 10px;
+}
+.inputLabel, .resultLabel{
   width:100%;
   text-align: right;
-  padding-right:0px;
+  padding-right:10px;
+  margin-right:50px;
+  font-size:1.25rem;
+}
+#popperDiv {
+  opacity: 0;
+  transition: opacity 0.3s;
+  transition-delay: 0.5s;
+}
+#popperDiv .arrow {
+  width: 0; 
+  height: 0; 
+  margin-top: 6px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  left:calc(50% - 10px);
+  position: absolute;
+  border-bottom: 10px solid var(--red);
+}
+#popperDiv .popperText{
+  background-color: var(--red);
+  margin-top: 15px;
+  color:white;
+  text-align: center;
+  border-radius:4px;
+  padding:10px;
+  font-family: 'dosis-light'
 }

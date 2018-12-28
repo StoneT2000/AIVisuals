@@ -1,0 +1,10 @@
+<script src="lib/popper.min.js"></script>
+<div class="my-button">reference</div>
+<div class="my-popper">popper</div>
+<script>
+var reference = document.querySelector('.my-button');
+var test = document.querySelector('.my-popper');
+var popper = new Popper(reference, test, {
+    placement: 'bottom',
+});
+</script>

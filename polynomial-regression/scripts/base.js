@@ -1,4 +1,5 @@
-$(document).ready(function () {
+
+/*$(document).ready(function () {
   $( '.footer_fascade' ).mouseenter(
     function() {
       $('.footer').css('transform','translateY(5px)');
@@ -12,4 +13,4 @@ $(document).ready(function () {
   $('.footer').mouseleave(function() {
       $('.footer').css('transform','translateY(60px)');
     });
-});
+});*/

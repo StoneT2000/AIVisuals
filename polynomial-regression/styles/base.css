@@ -19,13 +19,13 @@ button:focus {outline:0;}
   height: 60px;
   bottom: 0px;
   margin-left:20px;
-  z-index:9999;
+  z-index:-9999;
   color:rgb(52,58,64);
   display: block;
   font-size:16px;
-  -webkit-transform: translateY(60px);
-  -ms-transform: translateY(60px);
-  transform: translateY(60px);
+  -webkit-transform: translateY(5px);
+  -ms-transform: translateY(5px);
+  transform: translateY(5px);
   -webkit-transition: -webkit-transform 0.3s;
   transition: -webkit-transform 0.3s;
   -o-transition: transform 0.3s;

@@ -14,14 +14,14 @@ function polyC(x){
   return polyResult;
 }
 
-function generateSyntheticData(numPoints = 50, displacement = 0.2, generator = polyC) {
+function generateSyntheticData(numPoints = 50, displacement = 0.2, generator = polyC, r) {
   randomXs = [];
   randomYs = [];
   givenData = [];
   for (let i = 0; i < numPoints; i++) {
-    let x = randomRange(1);
+    let x = randomRange(r[0], r[1]);
     randomXs.push(x);
-    let y = generator(x);
+    let y = generator(x) + Math.random() * displacement;
     randomYs.push(y);
   }
   minx = randomXs.reduce(function(acc,curr){return (acc < curr ? acc : curr);})
@@ -31,14 +31,14 @@ function generateSyntheticData(numPoints = 50, displacement = 0.2, generator = p
   }
   return true;
 }
-var tfCoeffs = [tf.variable(tf.scalar(Math.random())),tf.variable(tf.scalar(Math.random())),tf.variable(tf.scalar(Math.random())),tf.variable(tf.scalar(Math.random()))];
-function randomizeTrainingVars(){
-  tfCoeffs = [tf.variable(tf.scalar(Math.random())),tf.variable(tf.scalar(Math.random())),tf.variable(tf.scalar(Math.random())),tf.variable(tf.scalar(Math.random()))];
+var tfCoeffs = [tf.variable(tf.scalar(randomRange(-1,1))),tf.variable(tf.scalar(randomRange(-1,1))),tf.variable(tf.scalar(randomRange(-1,1))),tf.variable(tf.scalar(randomRange(-1,1)))];
+function randomizeTrainingVars(range = [-1,1]){
+  tfCoeffs = [tf.variable(tf.scalar(randomRange(range[0], range[1]))),tf.variable(tf.scalar(randomRange(range[0], range[1]))),tf.variable(tf.scalar(randomRange(range[0], range[1]))),tf.variable(tf.scalar(randomRange(range[0], range[1])))];
 }
-generateSyntheticData(50, 0.2, polyC);
+generateSyntheticData(50, 0.2, polyC, [-1,1]);
 
 var xs = tf.tensor2d(randomXs, [randomXs.length, 1]);
-var ys = tf.tensor2d(randomYs, [randomYs.length, 1])
+var ys = tf.tensor2d(randomYs, [randomYs.length, 1]);
 function predict(x) {
   // y = a * x ^ 3 + b * x ^ 2 + c * x + d
   return tf.tidy(() => {
@@ -67,15 +67,16 @@ async function train(xs, ys, numIterations = 75, lr) {
     });
   }
 }
-//randomly give a number middle+-r
-function randomRange(r,middle = 0) {
-  return Math.random()*2*r - r + middle;
+//randomly give a number from r1 to r2, r1 < r2
+function randomRange(r1,r2) {
+  return Math.random()*(r2-r1) + r1;
 }
 
 async function constructDataPoints(){
   predictedData = [];
+  let range = maxx - minx;
   for (let i = 0; i <= 100; i++) {
-    let xval = (2*i/100) - 1;
+    let xval = minx + (i/100)*range;
     let yval = await predict(tf.scalar(xval)).data();
     predictedData.push({x:xval, y: yval[0]})
   }
