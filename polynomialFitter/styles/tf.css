@@ -1,0 +1,106 @@
+:root {
+  --red: rgb(244,78,63);
+  --red2: #d14336;
+  --red3: #c43f33;
+  --tf-orange:rgb(239,108,0);
+  --tf-orange-light:rgb(241,134,46);
+  --tf-orange-light-fade:rgba(241,134,46,0.5);
+  --black: #212529;
+  --white: #fefefe;
+}
+.sorryNoPage {
+  height:100vh;
+  padding:20px;
+  width:100vw;
+  top:0px;
+  position: fixed;
+  z-index: 999999;
+  background-color: var(--white);
+  display: table; 
+  text-align: center;
+
+}
+.sorryNoPage div {
+  display: table-cell; 
+  vertical-align: middle; 
+  text-align: center; 
+  height: 50px;
+  top:calc(50% - 25px);
+  margin: auto;
+  font-size: 3rem;
+
+}
+body {
+  font-family: 'dosis-medium','open-sans', sans-serif;
+  background-color: #fefefe;
+  overflow:hidden;
+}
+@font-face{
+  font-family: 'dosis-medium';
+  src:url('../lib/fonts/Dosis-Medium.ttf');
+}
+@font-face{
+  font-family: 'dosis-light';
+  src:url('../lib/fonts/Dosis-Light.ttf');
+}
+input {
+  text-align: center;
+  width: 100px;
+  border:none;
+  border-bottom: 2px solid rgba(255,98,73,0.5);
+  transition: border-bottom 0.2s;
+}
+input:hover{
+  border-bottom: 2px solid rgba(244,78,63,0.8);
+}
+input:focus {
+  border-bottom: 2px solid rgba(244,78,63,1);
+}
+.btn-primary.disabled {
+  background-color: var(--red);
+  border-color: var(--red);
+}
+.btn-primary {
+  background-color: var(--red);
+  border-color: var(--red);
+}
+.btn-primary:hover {
+  background-color: var(--red2);
+  border-color: var(--red2);
+}
+.btn-primary:active {
+  background-color: var(--red3);
+  border-color: var(--red3);
+}
+.btn-primary:focus{
+  background-color: var(--red2);
+  border-color: var(--red2);
+  box-shadow: 0 0 0 .2rem rgba(209,67,54,.5);
+}
+.btn-primary.disabled:active, .btn-primary.disabled:hover {
+    background-color: var(--red);
+  border-color: var(--red);
+}
+.container-fluid a {
+  font-family: 'dosis-light';
+  color:#42a2e1;
+  padding-bottom: 2px;
+  border-bottom: 2px solid rgba(66,162,225,0.5);
+  transition: color 0.15s, border-bottom 0.15s;
+}
+.container-fluid a:hover {
+  text-decoration: none;
+  color:#227cb7;
+  border-bottom: 2px solid rgba(66,162,225,1);
+}
+.link-tf{
+  color: var(--tf-orange-light) !important;
+  border-bottom: 2px solid var(--tf-orange-light-fade) !important;
+}
+.link-tf:hover {
+  color:var(--tf-orange) !important;
+  border-bottom: 2px solid var(--tf-orange) !important;
+}
+.btn-link {
+  
+}

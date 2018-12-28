@@ -1,24 +1,8 @@
-:root {
-  --red: rgb(244,78,63);
-  --red2: #d14336;
-  --red3: #c43f33;
-}
-body {
-  font-family: 'dosis-medium';
-}
 .mainContent {
   width:100%;
 }
 .container-fluid {
   padding:0px;
-}
-@font-face{
-  font-family: 'dosis-medium';
-  src:url('../lib/fonts/Dosis-Medium.ttf');
-}
-@font-face{
-  font-family: 'dosis-light';
-  src:url('../lib/fonts/Dosis-Light.ttf');
 }
 .displaySection {
   width:96%;
@@ -36,46 +20,6 @@ body {
 .options label{
   font-size:1.25rem;
 }
-.options input {
-  text-align: center;
-  width: 100px;
-  border:none;
-
-  border-bottom: 2px solid rgba(255,98,73,0.5);
-  transition: border-bottom 0.2s;
-}
-.options input:hover{
-  border-bottom: 2px solid rgba(244,78,63,0.8);
-}
-.options input:focus {
-  border-bottom: 2px solid rgba(244,78,63,1);
-}
-.btn-primary.disabled {
-  background-color: var(--red);
-  border-color: var(--red);
-}
-.btn-primary {
-  background-color: var(--red);
-  border-color: var(--red);
-}
-.btn-primary:hover {
-  background-color: var(--red2);
-  border-color: var(--red2);
-}
-.btn-primary:active {
-  background-color: var(--red3);
-  border-color: var(--red3);
-}
-.btn-primary:focus{
-  background-color: var(--red2);
-  border-color: var(--red2);
-  box-shadow: 0 0 0 .2rem rgba(209,67,54,.5);
-}
-.btn-primary.disabled:active, .btn-primary.disabled:hover {
-    background-color: var(--red);
-  border-color: var(--red);
-}
-
 .results input {
   width:100px;
 }
