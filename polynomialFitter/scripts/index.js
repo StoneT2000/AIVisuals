@@ -13,13 +13,13 @@ $(document).ready(function () {
   $("#popperDiv").css("opacity", "0");
 
   //generateSyntheticData(50, 0.2, polyC);
-  $("#batchSize").val(30);
+  $("#batchSize").val(50);
   $("#learningRate").val(0.35);
   $("#maxEpoch").val(5);
   for (let i = 0; i < coefficients.length; i++) {
     $("#coeff" + i).val(coefficients[i]);
   }
-  $("#numPoints").val(50);
+  $("#numPoints").val(5000);
   $("#displacementFactor").val(0.2);
   $("#x0").val(-1.0);
   $("#x1").val(1.0);
@@ -44,14 +44,14 @@ $(document).ready(function () {
             hitRadius:3
             
           },{
-          label: "Generated Data",
-          backgroundColor: 'rgb(255, 99, 132)',
+          label: "Sample of Generated Data",
+          backgroundColor: 'rgba(255, 99, 132,0)',
           borderColor: 'rgb(255, 99, 132)',
-          data: givenData
+          data: (givenData.slice(0,75)),
+            pointBorderWidth: 2,
+            pointBorderColor:'rgba(255, 99, 132, 0.8)',
           }]
       },
-
-      // Configuration options go here
       options: {maintainAspectRatio:false}
     });
   });
@@ -77,7 +77,7 @@ $(document).ready(function () {
       $(".commandLine").css('display','none');
       constructDataPoints().then(function(){
         chart.data.datasets[0].data = predictedData;
-        chart.data.datasets[1].data = givenData;
+        chart.data.datasets[1].data = givenData.slice(0,75)
         chart.update();
         enable('generateData', 'Generate Data')
         generating = false;
@@ -100,7 +100,8 @@ $(document).ready(function () {
       let learningRate = parseInput('learningRate','float')
       log('~ ML.fit$ fitCurve(xs,ys, '+bsize+', '+maxEpoch+', '+learningRate+')')
       $(".commandLine").css('display','none');
-      setTimeout(function(){animateChart(xs, ys, bsize, 1, maxEpoch, learningRate)},500)
+      
+      setTimeout(function(){animateChart(xs, ys, bsize, Math.ceil(givenData.length/bsize), 1, maxEpoch, learningRate)},500)
     }
   });
   $("#stopTraining").on('click', function(){
@@ -114,11 +115,11 @@ $(document).ready(function () {
 var stopAnimation = false;
 var inTraining = false;
 var generating = false;
-async function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate) {
+async function animateChart(xs, ys, bsize, numBatches, currentEpoch, maxEpoch, learningRate) {
   if (currentEpoch === 1) {
     log('Starting training with batchsize = ' + bsize + ', ' + maxEpoch + ' epochs, learning rate = ' + learningRate);
   }
-  
+  //bnum == batch number
   if (currentEpoch === maxEpoch + 1) {
     finishTraining();
     return;
@@ -129,16 +130,16 @@ async function animateChart(xs, ys, bsize, currentEpoch, maxEpoch, learningRate)
   }
   
   inTraining = true;
-  train(xs, ys, bsize, learningRate).then(function(){
-    constructDataPoints().then(function(){
-      chart.data.datasets[0].data = predictedData;
-      chart.data.datasets[1].data = givenData;
-      chart.update();
-      updateResults();
-      log('Epoch ' + currentEpoch + ' / ' + maxEpoch)
-      return animateChart(xs, ys, bsize, currentEpoch+1, maxEpoch, learningRate)
-    });
-  })
+    train(xs, ys, bsize, numBatches, learningRate).then(function(){
+      constructDataPoints().then(function(){
+        chart.data.datasets[0].data = predictedData;
+        chart.data.datasets[1].data = givenData.slice(0,75)
+        chart.update();
+        updateResults();
+        log('Epoch ' + currentEpoch + ' / ' + maxEpoch)
+        return animateChart(xs, ys, bsize, numBatches, currentEpoch+1, maxEpoch, learningRate)
+      });
+    })
   
   
 }
