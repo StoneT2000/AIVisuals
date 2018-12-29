@@ -34,7 +34,7 @@
   margin:10px;
 }
 .chartContainer, #canvas {
-  width: 40%;
+  width: 60%;
   height:400px;
   display: inline-block;
   position: relative;
@@ -42,7 +42,7 @@
   margin-right:2%;
 }
 .console {
-  width: 56%;
+  width: 36%;
 
   height:400px;
   border: 2px solid #333333;
