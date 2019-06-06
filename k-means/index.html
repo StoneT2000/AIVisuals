@@ -43,23 +43,25 @@
         <p>Select Data Generation Method</p>
         <select>
           <option>Normal Distribution Around Center</option>
+          <!--
           <option>Complete Random about Center within range</option>
+          -->
         </select>
         <br><br>
         <div class='btn btn-secondary' id='generateData' onclick='generateDataButton()'>Generate Data</div>
       </div>
     </div>
-    <div class="mainContent">
+    <div class="mainContent" style='padding:1rem'>
       <h1 style='padding-left: 2%'>K-means Clustering Algorithm</h1>
       <div class="displaySection">
        
         <div class="chartContainer">
-           <h3>Testing Area</h3>
+           <h3>Predicted Labels</h3>
           <canvas id='chart'></canvas>
         </div>
         
         <div class="chartContainer">
-          <h3>Original Data</h3>
+          <h3>Original Labels</h3>
           <canvas id='origChart'></canvas>
         </div>
       </div>
@@ -69,6 +71,14 @@
         <div class='btn btn-primary' id='initialize_means_popup'>Initialize Means</div>
         <div class='btn btn-primary' id='iterate'>Iterate one step</div>
       </div>
+      <!--
+      <div>
+        <h3>Sources</h3>
+        <p>
+          K-means++ initialization: 
+        </p>
+      </div>
+      -->
     </div>
   </div>
   <div style="height:50px;">
