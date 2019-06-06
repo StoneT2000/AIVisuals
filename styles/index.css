@@ -10,10 +10,10 @@
   height:150px;
 }
 #redLine {
-  width: 287px;
+  width: 335px;
   height:0.31rem;
   top:calc(4.59rem);
-  left: 28px;
+  left: 22px;
   position: absolute;
   border-radius:5px;
   border-bottom: 0.33rem dotted var(--red);

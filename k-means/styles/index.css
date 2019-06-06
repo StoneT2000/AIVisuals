@@ -1,0 +1,84 @@
+.mainContent {
+  width:100%;
+}
+.container-fluid {
+  padding:0px;
+}
+.displaySection {
+  width:96%;
+  height:auto;
+  margin-left:2%;
+}
+.options {
+  width:90%;
+  margin-left: 5%;
+  font-size:1.25rem;
+}
+.options .row div {
+  padding-left:0px;
+  padding-right:0px;
+}
+.options label{
+  font-size:1.25rem;
+}
+.results input {
+  width:100px;
+}
+.modelParameters input {
+  width: 100px;
+}
+.controls {
+  text-align: center;
+  margin:10px;
+  display: inline-block;
+}
+label {
+  margin-right: 0.5rem;
+}
+.chartContainer, #canvas {
+  height:600px;
+  width:600px;
+  display: inline-block;
+  position: relative;
+  padding: 0px;
+  margin-right:2%;
+  margin-bottom:4rem;
+  margin-top:4rem;
+}
+.row {
+  margin-top: 10px;
+}
+.inputLabel, .resultLabel{
+  width:100%;
+  text-align: right;
+  padding-right:10px;
+  margin-right:50px;
+  font-size:1.25rem;
+}
+#popperDiv {
+  opacity: 0;
+  transition: opacity 0.3s;
+  transition-delay: 0.5s;
+}
+#popperDiv .arrow {
+  width: 0; 
+  height: 0; 
+  margin-top: 6px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  left:calc(50% - 10px);
+  position: absolute;
+  border-bottom: 10px solid var(--red);
+}
+#popperDiv .popperText{
+  background-color: var(--red);
+  margin-top: 15px;
+  color:white;
+  text-align: center;
+  border-radius:4px;
+  padding:10px;
+  font-family: 'dosis-light'
+}
+.commandLine.indicator::after{
+  content:'|'
+}

@@ -1,0 +1,131 @@
+var givenData = []; //all data {x:,y:,label:}
+var originalData = [];
+var originalLabelCounts = 2;
+//randomly give a number from r1 to r2, r1 < r2
+var predictedData = [];
+function randomRange(r1,r2) {
+  return Math.random()*(r2-r1) + r1;
+}
+function randomItem(arr) {
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+async function generateSyntheticData(numPoints = 50, clusters = 4, r = [0,1]) {
+  var randomXs = [];
+  var randomYs = [];
+  givenData = [];
+  originalData = [];
+  originalLabelCounts = clusters;
+  //randomly choose cluster centers
+  var centers = []; //= [{x:0.5,y:0.2,label:0},{x:0.8,y:0.6,label:1}];
+  for (let i = 0; i < clusters; i++) {
+    centers.push({x:randomRange(0.2,0.8),y:randomRange(0.2,0.8),label:i});
+  }
+  for (let i = 0; i < numPoints; i++) {
+    var clusterCenter = randomItem(centers);
+    var R1 = clusterCenter.x - 0.002
+    var R2 = clusterCenter.x + 0.002
+    let x = randomRange(R1,R2);
+    let c = denseCircleGen(clusterCenter.x,clusterCenter.y,0.2);//denseCircleGen(clusterCenter.x,clusterCenter.y,0.2);
+    randomXs.push(c.x);
+    R1 = clusterCenter.y - 0.002
+    R2 = clusterCenter.x + 0.002
+    let y = randomRange(R1,R2);
+    randomYs.push(c.y);
+    givenData.push({x:randomXs[i],y:randomYs[i],label:clusterCenter.label});
+    originalData.push({x:randomXs[i],y:randomYs[i],label:clusterCenter.label});
+  }
+  minx = randomXs.reduce(function(acc,curr){return (acc < curr ? acc : curr);})
+  maxx = randomXs.reduce(function(acc,curr){return (acc > curr ? acc : curr);})
+  return true;
+}
+
+function denseCircleGen(x1,y1, range) {
+  //normal distributed...
+  //probability of being distance d^2 away from center is 1/d^2;
+  //let x = randomRange(-0.5,0.5);
+  let ang = randomRange(0,2*Math.PI);
+  //let r = Math.log(randomRange(0,1000))//Math.pow(2.7128, -5 * Math.pow(randomRange(0,1), 4));
+  let r = range*Math.pow(Math.E, -5 * Math.pow(randomRange(0,1),2));
+  return {x:x1+Math.cos(ang)*r,y:y1+Math.sin(ang)*r};
+}
+function boxGen(x1,y1,width) {
+  let hw = width/2;
+  let x2 = randomRange(x1-hw,x1+hw);
+  let y2 = randomRange(y1-hw,y1+hw);
+  return {x:x2,y:y2};
+}
+
+function randomMeansInitialization(data, meanCount) {
+  if (meanCount > data.length) {
+    console.log("More clusters asked for than data points available")
+    return false;
+  }
+  FisherYatesShuffle2(data,originalData);
+  var means = [];
+  for (let i = 0; i < meanCount; i++) {
+    means.push({x:data[i].x,y:data[i].y});
+  }
+  return means;
+}
+
+
+//performs one iteration of k-means algorithm, updates data, means in place and returns data and the newMeans
+async function kMeansIterate(data, means) {
+  //loop through all data points and assign each data point to nearest cluster
+  var newMeans = new Array(means.length);
+  var clusterSizes = new Array(means.length);
+  for (let i = 0; i < newMeans.length; i++) {
+    newMeans[i] = {x:0,y:0};
+    clusterSizes[i] = 0;
+  }
+  console.log(means);
+  for (let i = 0 ; i < data.length; i++) {
+    let p = [data[i].x,data[i].y];
+    let label = data[i].label;
+    let min = Infinity;
+    for (let j = 0; j < means.length; j++)  {
+      let d = sqDist(p[0],p[1],means[j].x,means[j].y);
+      if (d <= min) {
+        min = d;
+        label = j;
+      }
+    }
+    newMeans[label].x += p[0];
+    newMeans[label].y += p[1];
+    data[i].label = label;
+    clusterSizes[label] += 1;
+  }
+  //recalculate the new means and return the newly labeled data and means
+  for (let i = 0; i < newMeans.length; i++) {
+    newMeans[i].x /= clusterSizes[i];
+    newMeans[i].y /= clusterSizes[i];
+  }
+  return {data:data,means:newMeans};
+}
+function sqDist(x1,y1,x2,y2) {
+  return Math.pow(x2-x1,2)+Math.pow(y2-y1,2);
+}
+function FisherYatesShuffle(data) {
+  for (let i = 0; i < data.length-1; i++) {
+    let temp = data[i];
+    let j = Math.floor(Math.random()*(data.length - i)) + i;
+    //exchange j and i
+    data[i] = data[j];
+    data[j] = temp;
+  }
+  return data;
+}
+//shuffles two arrays of the same size in the same permutation
+function FisherYatesShuffle2(data,data2) {
+  for (let i = 0; i < data.length-1; i++) {
+    let temp = data[i];
+    let temp2 = data2[i];
+    let j = Math.floor(Math.random()*(data.length - i)) + i;
+    //exchange j and i
+    data[i] = data[j];
+    data[j] = temp;
+    data2[i] = data2[j];
+    data2[j] = temp2;
+  }
+  return data,data2;
+}

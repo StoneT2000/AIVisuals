@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Make sure mobile width is width of mobile viewport-->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Using ML to fit curves</title>
+
+  <link rel="stylesheet" href="lib/bootstrap.min.css">
+  <link rel ="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/tf.css">
+  <link rel ="stylesheet" href="styles/index.css">
+  <script src="lib/jquery-3.3.1.min.js"></script>
+  <script src="lib/bootstrap.min.js"></script>
+  <!--Add additional scripts here-->
+  <script src="scripts/base.js"></script>
+  <script src="lib/Chart.bundle.min.js"></script>
+  <script src="lib/tf.min.js"></script>
+  <script src="scripts/k-means.js"></script>
+  <script src="scripts/index.js"></script>
+  <script src="lib/popper.min.js"></script>
+  <script src="scripts/menu.js"></script>
+  <script src="lib/tooltip.min.js"></script>
+</head>
+<body>
+  <div class='sorryNoPage'>
+    <div>Sorry, this website is incompatible with mobile browsers</div>
+  </div>
+  <div id="pageCover">
+  </div>
+  <div class="container-fluid" style='margin-top:20px'>
+    <!--All page content goes here -->
+    <div id='popperDiv'>
+      <div class='arrow'></div>
+      <div class='popperText'>Oops! You got NaN<br>Try reducing learning rate</div>
+    </div>
+    <div id="popupMessageWrapper">
+      <div id="popupMessage">
+        <h2 id='popupTitle'>Generate Random Data</h2>
+        <div>
+          <label>Number of Data Points</label><input id='numOfPoints'>
+          <label>Number of Clusters/Unique Data Labels</label><input id='numOfClusters'>
+        </div>
+        <p>Select Data Generation Method</p>
+        <select>
+          <option>Normal Distribution Around Center</option>
+          <option>Complete Random about Center within range</option>
+        </select>
+        <br><br>
+        <div class='btn btn-secondary' id='generateData' onclick='generateDataButton()'>Generate Data</div>
+      </div>
+    </div>
+    <div class="mainContent">
+      <h1 style='padding-left: 2%'>K-means Clustering Algorithm</h1>
+      <div class="displaySection">
+       
+        <div class="chartContainer">
+           <h3>Testing Area</h3>
+          <canvas id='chart'></canvas>
+        </div>
+        
+        <div class="chartContainer">
+          <h3>Original Data</h3>
+          <canvas id='origChart'></canvas>
+        </div>
+      </div>
+      <span id='accuracy'></span>
+      <div class='controls'>
+        <div class='btn btn-primary' id='generate_random_popup'>Generate random data</div>
+        <div class='btn btn-primary' id='initialize_means_popup'>Initialize Means</div>
+        <div class='btn btn-primary' id='iterate'>Iterate one step</div>
+      </div>
+    </div>
+  </div>
+  <div style="height:50px;">
+  </div>
+  <!--<div class="footer_fascade">
+  </div>-->
+  
+  <footer class="footer" style='border-top:2px solid rgba(244,78,63,1);'>
+    <span style="margin-right:4px;">By Stone T. @ Github</span><a href="https://github.com/StoneT2000"><svg height="24" width="24" class="octicon octicon-mark-github" viewBox="0 0 20 20" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a><span style="border-right: 1px solid #212529;margin:0px 10px 0px 10px;"></span><span style="margin-right:4px;">Email</span><a href="mailto:stoneztao@gmail.com"><svg width="28" height="28" class="octicon octicon-mail" viewBox="0 0 20 18" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M0 4v8c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1zm13 0L7 9 1 4h12zM1 5.5l4 3-4 3v-6zM2 12l3.5-3L7 10.5 8.5 9l3.5 3H2zm11-.5l-4-3 4-3v6z"></path></svg></a>
+  </footer>
+</body>
+</html>
