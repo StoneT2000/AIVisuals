@@ -8,16 +8,25 @@ var numClusters = 3;
 var standardDeviation = 0.1;
 var numMeans = 3;
 $(document).ready(function () {
+  $(".popupMessage").css('display','none');
+  
+  //Initialize settings
+  $("#numOfPoints").val(numPoints);
+  $("#numOfClusters").val(numClusters);
+  $("#numOfMeans").val(numMeans);
+  $("#std").val(standardDeviation);
+  
   //generateSyntheticData(10).then(displayPredictedData(givenData,[0,1]));
   generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(originalData));
   displayOriginalLabels(originalData);
   $("#generate_random_popup").on('click', function(){
     $("#popupMessageWrapper").css('display','block');
     $("#pageCover").css('display','block');
-    $("#popupMessageWrapper").html(generateRandomHTML);
-    $("#numOfPoints").val(numPoints);
-    $("#numOfClusters").val(numClusters);
+    $("#generatePopup").css('display','block');
   })
+  
+  
+  
   $("#iterate").on('click', function() {
     displayAndIterate(givenData,means);
     //let acc = calculateAccuracy(givenData,originalData);
@@ -26,16 +35,12 @@ $(document).ready(function () {
   $("#initialize_means_popup").on('click', function(){
     $("#popupMessageWrapper").css('display','block');
     $("#pageCover").css('display','block');
-    $("#popupMessageWrapper").html(initializeMeansHTML);
-    $("#numOfMeans").val(numMeans);
+    $("#initializePopup").css('display','block');
   });
-  $("#initialize_means").on('click', function(){
-    
-  })
 })
 function initializeMeansButton() {
-  $("#popupMessageWrapper").css('display','none');
-  numMeans = $("#numOfMeans").val();
+  
+  numMeans = parseInt($("#numOfMeans").val());
   means = randomMeansInitialization(givenData, numMeans);
   displayRawUnlabeledData(originalData);
   for (let i = 0; i < originalData.length; i++) {
@@ -44,19 +49,33 @@ function initializeMeansButton() {
   unlabeledDataDisplayed = true;
   displayMeans(means);
 
+  $("#popupMessageWrapper").css('display','none');
   $("#pageCover").css('display','none');
+  $(".popupMessage").css('display','none');
 }
 function generateDataButton() {
   chart.destroy();
-  numPoints = $("#numOfPoints").val();
-  numClusters = $("#numOfClusters").val();
-  //$("#selectGenerator");
+  numPoints = parseInt($("#numOfPoints").val());
+  numClusters = parseInt($("#numOfClusters").val());
+  let genType = $("#selectGenerator").val()
+  if (genType == "Normal Distribution Around Center") {
+    
+  }
+  else if (genType == "Complete Random about Center within range") {
+    
+  }
+  standardDeviation = parseFloat($("#std").val());
   generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(givenData));
   displayOriginalLabels(originalData);
   unlabeledDataDisplayed = true;
   $("#popupMessageWrapper").css('display','none');
   $("#pageCover").css('display','none');
+  $(".popupMessage").css('display','none');
 }
+function parseThis(a){
+  
+}
+
 var unlabeledDataDisplayed = true;
 function calculateAccuracy(data,originalData) {
   let correct = 0;
