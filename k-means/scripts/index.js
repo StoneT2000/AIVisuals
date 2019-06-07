@@ -3,17 +3,20 @@ var originalChart;
 var ctx;
 var lrPopper;
 var means = [];
+var numPoints = 400;
+var numClusters = 3;
+var standardDeviation = 0.1;
+var numMeans = 3;
 $(document).ready(function () {
   //generateSyntheticData(10).then(displayPredictedData(givenData,[0,1]));
-  generateSyntheticData(200).then(displayRawUnlabeledData(originalData));
+  generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(originalData));
   displayOriginalLabels(originalData);
-  $("#generate_random").on('click', function(){
-    
-  })
   $("#generate_random_popup").on('click', function(){
     $("#popupMessageWrapper").css('display','block');
     $("#pageCover").css('display','block');
     $("#popupMessageWrapper").html(generateRandomHTML);
+    $("#numOfPoints").val(numPoints);
+    $("#numOfClusters").val(numClusters);
   })
   $("#iterate").on('click', function() {
     displayAndIterate(givenData,means);
@@ -24,6 +27,7 @@ $(document).ready(function () {
     $("#popupMessageWrapper").css('display','block');
     $("#pageCover").css('display','block');
     $("#popupMessageWrapper").html(initializeMeansHTML);
+    $("#numOfMeans").val(numMeans);
   });
   $("#initialize_means").on('click', function(){
     
@@ -31,8 +35,8 @@ $(document).ready(function () {
 })
 function initializeMeansButton() {
   $("#popupMessageWrapper").css('display','none');
-  let v = $("#numOfMeans").val();
-  means = randomMeansInitialization(givenData, v);
+  numMeans = $("#numOfMeans").val();
+  means = randomMeansInitialization(givenData, numMeans);
   displayRawUnlabeledData(originalData);
   for (let i = 0; i < originalData.length; i++) {
     givenData[i].label = originalData[i].label;
@@ -44,13 +48,14 @@ function initializeMeansButton() {
 }
 function generateDataButton() {
   chart.destroy();
-  let numPoints = $("#numOfPoints").val();
-  let clusters = $("#numOfClusters").val();
-  generateSyntheticData(numPoints, clusters).then(displayRawUnlabeledData(givenData));
+  numPoints = $("#numOfPoints").val();
+  numClusters = $("#numOfClusters").val();
+  //$("#selectGenerator");
+  generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(givenData));
   displayOriginalLabels(originalData);
   unlabeledDataDisplayed = true;
   $("#popupMessageWrapper").css('display','none');
-$("#pageCover").css('display','none');
+  $("#pageCover").css('display','none');
 }
 var unlabeledDataDisplayed = true;
 function calculateAccuracy(data,originalData) {
@@ -122,23 +127,13 @@ async function displayAndIterate(data,meansArr) {
   displayPredictedData(data,means);
 }
 
-var colors = ['rgb(255, 99, 132)','rgb(55, 159, 255)','rgb(155, 99, 255)', '#a4ddac']
-var colorsMeans = ['rgb(205, 89, 122)','#2366a3','#56378c', '#57755b']
+var colors = ['rgb(255, 99, 132)','rgb(55, 159, 255)','#3cbbb1','rgb(155, 99, 255)', '#a4ddac','#ff8469','#c7cfd1','#ffaa5a']
+var colorsMeans = ['rgb(205, 89, 122)','#2366a3','#2c8981','#56378c', '#57755b','#d1634a','#9fa6a7','#ba7c42']
 async function displayPredictedData(data, means){
   //updateResults();
   
   let datasets = [];
-  for (let i = 0; i < means.length; i++) {
-    datasets.push(
-    {
-        label: "Label " + (i+1),
-        backgroundColor: 'rgba(255, 99, 132,0)',
-        borderColor: colors[i % colors.length],
-        data: (data.filter( a => a.label == i ? true : false)),
-        pointBorderWidth: 1,
-        pointBorderColor:colors[i % colors.length],
-        hoverRadius: 10,
-    });
+  for (let i = 0 ; i< means.length; i++) {
     datasets.push(
     {
         label: "Mean " + (i+1),
@@ -150,6 +145,16 @@ async function displayPredictedData(data, means){
         pointStyle: 'crossRot',
         pointRadius: 10,
         pointHoverRadius: 12,
+    });
+    datasets.push(
+    {
+        label: "Label " + (i+1),
+        backgroundColor: 'rgba(255, 99, 132,0)',
+        borderColor: colors[i % colors.length],
+        data: (data.filter( a => a.label == i ? true : false)),
+        pointBorderWidth: 1,
+        pointBorderColor:colors[i % colors.length],
+        hoverRadius: 10,
     });
     
   }
@@ -192,18 +197,18 @@ async function displayPredictedData(data, means){
     for (let k = 0; k < chart.data.datasets.length; k+=2) {
       //remove the old labels and move them to new label, same object
       var i = 0;
-      for (; i < datasets[k].data.length; i++) {
-        if (i < chart.data.datasets[k].data.length){
-          chart.data.datasets[k].data[i] = datasets[k].data[i]; 
+      for (; i < datasets[k+1].data.length; i++) {
+        if (i < chart.data.datasets[k+1].data.length){
+          chart.data.datasets[k+1].data[i] = datasets[k+1].data[i]; 
         }
         else {
-          chart.data.datasets[k].data.push(datasets[k].data[i]);
+          chart.data.datasets[k+1].data.push(datasets[k+1].data[i]);
         }
       }
-      chart.data.datasets[k].data.splice(i,chart.data.datasets[k].data.length);
+      chart.data.datasets[k+1].data.splice(i,chart.data.datasets[k+1].data.length);
       
-      chart.data.datasets[k+1].data[0].x = datasets[k+1].data[0].x;
-      chart.data.datasets[k+1].data[0].y = datasets[k+1].data[0].y;
+      chart.data.datasets[k].data[0].x = datasets[k].data[0].x;
+      chart.data.datasets[k].data[0].y = datasets[k].data[0].y;
     }
     chart.update();
   }
@@ -250,7 +255,15 @@ async function displayRawUnlabeledData(data){
               }
           }
       },
-      legend:legendOption
+      legend:legendOption,
+      scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 1
+                }
+            }]
+        }
              
     }
   });

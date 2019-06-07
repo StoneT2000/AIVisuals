@@ -9,43 +9,44 @@ function randomRange(r1,r2) {
 function randomItem(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
 }
-async function generateSyntheticData(numPoints = 50, clusters = 4, r = [0,1]) {
+
+//returns a normally distributed random number
+function boxMullerTransform() {
+  return Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
+}
+async function generateSyntheticData(numPoints = 50, clusters = 4, spread = 0.) {
   var randomXs = [];
   var randomYs = [];
   givenData = [];
   originalData = [];
   originalLabelCounts = clusters;
   //randomly choose cluster centers
-  var centers = []; //= [{x:0.5,y:0.2,label:0},{x:0.8,y:0.6,label:1}];
+  var centers = [];
   for (let i = 0; i < clusters; i++) {
-    centers.push({x:randomRange(0.2,0.8),y:randomRange(0.2,0.8),label:i});
+    centers.push({x:randomRange(0.1,0.9),y:randomRange(0.1,0.9),label:i});
   }
   for (let i = 0; i < numPoints; i++) {
     var clusterCenter = randomItem(centers);
-    var R1 = clusterCenter.x - 0.002
-    var R2 = clusterCenter.x + 0.002
-    let x = randomRange(R1,R2);
-    let c = denseCircleGen(clusterCenter.x,clusterCenter.y,0.2);//denseCircleGen(clusterCenter.x,clusterCenter.y,0.2);
+    let c = normalCircleGen(clusterCenter.x,clusterCenter.y,spread);//denseCircleGen(clusterCenter.x,clusterCenter.y,0.2);
     randomXs.push(c.x);
-    R1 = clusterCenter.y - 0.002
-    R2 = clusterCenter.x + 0.002
-    let y = randomRange(R1,R2);
     randomYs.push(c.y);
     givenData.push({x:randomXs[i],y:randomYs[i],label:clusterCenter.label});
     originalData.push({x:randomXs[i],y:randomYs[i],label:clusterCenter.label});
   }
-  minx = randomXs.reduce(function(acc,curr){return (acc < curr ? acc : curr);})
-  maxx = randomXs.reduce(function(acc,curr){return (acc > curr ? acc : curr);})
   return true;
 }
 
-function denseCircleGen(x1,y1, range) {
-  //normal distributed...
-  //probability of being distance d^2 away from center is 1/d^2;
-  //let x = randomRange(-0.5,0.5);
+function normalCircleGen(x1,y1, spread) {
+  //The distance from the center is normally distributed
   let ang = randomRange(0,2*Math.PI);
-  //let r = Math.log(randomRange(0,1000))//Math.pow(2.7128, -5 * Math.pow(randomRange(0,1), 4));
-  let r = range*Math.pow(Math.E, -5 * Math.pow(randomRange(0,1),2));
+  let r = spread-spread*Math.pow(Math.E, -1 * Math.pow(randomRange(0,1),2));
+  r = spread * boxMullerTransform();
+  return {x:x1+Math.cos(ang)*r,y:y1+Math.sin(ang)*r};
+}
+function randomCircleGen(x1,y1, radius) {
+  //The distance from the center is normally distributed
+  let ang = randomRange(0,2*Math.PI);
+  let r = randomRange(0,radius);
   return {x:x1+Math.cos(ang)*r,y:y1+Math.sin(ang)*r};
 }
 function boxGen(x1,y1,width) {
