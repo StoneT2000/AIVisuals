@@ -157,10 +157,14 @@ async function kMeansIterate(data, means) {
     data[i].label = label;
     clusterSizes[label] += 1;
   }
+  convergence = true;
   //recalculate the new means and return the newly labeled data and means
   for (let i = 0; i < newMeans.length; i++) {
     newMeans[i].x /= clusterSizes[i];
     newMeans[i].y /= clusterSizes[i];
+    if (newMeans[i].x != means[i].x || newMeans[i].y != means[i].y) {
+      convergence = false;
+    }
   }
   return {data:data,means:newMeans};
 }

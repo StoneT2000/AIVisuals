@@ -49,8 +49,12 @@ $(document).ready(function () {
   
   $("#iterate").on('click', function() {
     displayAndIterate(givenData,means);
+    
     let ri = randIndex(givenData,originalData);
     $("#randIndex").text(ri);
+  });
+  $("#autoIterate").on('click', function(){
+    displayAndAutoIterate(givenData,means,1);
   });
   $("#initialize_means_popup").on('click', function(){
     $("#popupMessageWrapper").css('display','block');
@@ -92,13 +96,18 @@ function generateDataButton() {
     genType = randomCircleGen;
     spread = dataRange;
   }
-  
+  convergence = false;
   generateSyntheticData(numPoints, numClusters,spread, genType).then(displayRawUnlabeledData(givenData));
   displayOriginalLabels(originalData);
   unlabeledDataDisplayed = true;
   $("#popupMessageWrapper").css('display','none');
   $("#pageCover").css('display','none');
   $(".popupMessage").css('display','none');
+}
+
+function updateAllMetrics(trueLabels, predictedLabels) {
+  let ri = randIndex(trueLabels, predictedLabels);
+  $("#randIndex").text(ri);
 }
 
 var unlabeledDataDisplayed = true;
@@ -170,14 +179,32 @@ async function displayAndIterate(data,meansArr) {
   if (means.length == 0) {
     alert("Means not initialized yet");
   }
-  let res = await kMeansIterate(data,meansArr);
+  let res = await kMeansIterate(data,meansArr); //perform one iteration, and set convergence true or false if reached or not
   data = res.data;
   means = res.means;
   displayPredictedData(data,means);
+  updateAllMetrics(data,originalData);
 }
 
-var colors = ['rgb(255, 99, 132)','rgb(55, 159, 255)','#3cbbb1','rgb(155, 99, 255)', '#a4ddac','#ff8469','#c7cfd1','#ffaa5a']
-var colorsMeans = ['rgb(205, 89, 122)','#2366a3','#2c8981','#56378c', '#57755b','#d1634a','#9fa6a7','#ba7c42']
+var iterationSpeed = 500; //time between each iteration in ms;
+async function displayAndAutoIterate(data, meansArr, n) {
+  if (convergence) {
+    return;
+  }
+  iterationSpeed = parseFloat($("#iterationSpeed").val());
+  n += 1;
+  displayAndIterate(data,meansArr).then(
+  setTimeout(function(){
+    displayAndAutoIterate(data,means,n);
+  },iterationSpeed)
+  );
+  
+}
+
+var colors = ['rgb(255, 99, 132)','rgb(55, 159, 255)','#3cbbb1','rgb(155, 99, 255)', '#a4ddac','#ff8469','#c7cfd1','#ffaa5a','#a6988d','#e9eb87','#55546d'];
+var colorsMeans = ['rgb(205, 89, 122)','#2366a3','#2c8981','#56378c', '#57755b','#d1634a','#9fa6a7','#ba7c42','#86776a','#d4d67b','#302f4d'];
+var convergence = false;
+
 async function displayPredictedData(data, means){
   //updateResults();
   
@@ -278,6 +305,7 @@ async function displayPredictedData(data, means){
 }
 async function displayRawUnlabeledData(data){
   //updateResults();
+  convergence = false;
   if (chart) {
     chart.destroy();
   }

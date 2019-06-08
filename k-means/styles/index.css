@@ -33,6 +33,9 @@
   display: inline-block;
   margin-left:5%;
 }
+.controls .btn {
+  vertical-align: top;
+}
 .metrics {
   margin-left:5%;
 }
@@ -59,4 +62,8 @@ label {
   padding-right:10px;
   margin-right:50px;
   font-size:1.25rem;
+}
+#iterationSpeed {
+  top:6px;
+  position: relative;
 }
