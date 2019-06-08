@@ -14,7 +14,7 @@ function randomItem(arr) {
 function boxMullerTransform() {
   return Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
 }
-async function generateSyntheticData(numPoints = 50, clusters = 4, spread = 0.) {
+async function generateSyntheticData(numPoints = 50, clusters = 4, spread = 0.1, generator = normalCircleGen) {
   var randomXs = [];
   var randomYs = [];
   givenData = [];
@@ -27,7 +27,7 @@ async function generateSyntheticData(numPoints = 50, clusters = 4, spread = 0.) 
   }
   for (let i = 0; i < numPoints; i++) {
     var clusterCenter = randomItem(centers);
-    let c = normalCircleGen(clusterCenter.x,clusterCenter.y,spread);//denseCircleGen(clusterCenter.x,clusterCenter.y,0.2);
+    let c = generator(clusterCenter.x,clusterCenter.y,spread);//denseCircleGen(clusterCenter.x,clusterCenter.y,0.2);
     randomXs.push(c.x);
     randomYs.push(c.y);
     givenData.push({x:randomXs[i],y:randomYs[i],label:clusterCenter.label});
@@ -69,7 +69,69 @@ function randomMeansInitialization(data, meanCount) {
   return means;
 }
 
-
+//Implementation of the original k-means ++ initialization 
+function kmeansppInitialization(data, meanCount) {
+  if (meanCount > data.length) {
+    console.log("More clusters asked for than data points available")
+    return false;
+  }
+  //randomly choose at random from among the data points
+  var means = [];
+  means.push(randomItem(data));
+  for (let i = 1; i < meanCount; i++) {
+    //compute distance to nearest mean already chosen
+    let distances = [];
+   
+    //console.log("Means:" + JSON.stringify(means));
+    for (let k = 0;k < data.length; k++) {
+      let min = Infinity;
+      let point = data[k];
+      for (let j = 0; j < means.length; j++) {
+        let mean = means[j];
+        //console.log(dist2(mean.x,mean.y, point.x,point.y));
+        min = Math.min(min, dist2(mean.x,mean.y, point.x,point.y));
+      }
+      //console.log("Point,min:" + JSON.stringify(point),min);
+      if (distances.length > 0){
+        distances.push(min + distances[distances.length-1]); //cumulative
+      }
+      else {
+        distances.push(min);
+      }
+    }
+    let num = randomRange(0, distances[distances.length-1]);
+    //console.log(distances);
+    //console.log("Num " + num);
+    //binary search through distances array to find k s.t distances[k] < num <= distances[k+1]
+    //then we select point k+1;
+    let l = 0;
+    let r = distances.length-1;
+    let broke = false;
+    let mid = Math.floor((l + r)/2);
+    while (l < r) {
+      mid = Math.floor((l + r)/2);
+      if (distances[mid] < num && num <= distances[mid+1]) {
+        means.push(data[mid+1]);
+        broke = true;
+        break;
+      }
+      else if (num <= distances[mid]){
+        r = mid;
+      }
+      else {
+        l = mid + 1;
+      }
+    }
+    //if we didn't break and we stopped due to l < r condition being not met, then we push the data[mid], which is data[0] or data[data.length-1];
+    if (broke == false) {
+      means.push(data[mid]);
+    }
+  }
+  return means;
+}
+function dist2(x1,y1,x2,y2) {
+  return Math.pow(x2-x1,2) + Math.pow(y2-y1,2);
+}
 //performs one iteration of k-means algorithm, updates data, means in place and returns data and the newMeans
 async function kMeansIterate(data, means) {
   //loop through all data points and assign each data point to nearest cluster
@@ -79,7 +141,6 @@ async function kMeansIterate(data, means) {
     newMeans[i] = {x:0,y:0};
     clusterSizes[i] = 0;
   }
-  console.log(means);
   for (let i = 0 ; i < data.length; i++) {
     let p = [data[i].x,data[i].y];
     let label = data[i].label;

@@ -20,6 +20,7 @@
   <script src="lib/popper.min.js"></script>
   <script src="scripts/menu.js"></script>
   <script src="lib/tooltip.min.js"></script>
+  <script src="scripts/clustering-metrics.js"></script>
 </head>
 <body>
   <div class='sorryNoPage'>
@@ -29,6 +30,7 @@
   </div>
   <div class="container-fluid" style='margin-top:20px'>
     <div id="popupMessageWrapper">
+      <div class='closeBtn btn btn-secondary' id='closePopup'>X</div>
       <div id="generatePopup" class='popupMessage'>
         <h2 id='popupTitle'>Generate Random Data</h2>
         <div>
@@ -40,8 +42,11 @@
           <option value='normal'>Normal Distribution Around Center</option>
           <option value='random'>Complete Random about Center within range</option>
         </select>
-        <div class='settings'>
+        <div id='normalSettings' class='settings'>
           <label>Standard Deviation</label><input id='std'>
+        </div>
+        <div id='randomSettings' class='settings'>
+          <label>Range of data</label><input id='range'>
         </div>
         <br><br>
         <div class='btn btn-secondary' id='generateData' onclick='generateDataButton()'>Generate Data</div>
@@ -49,9 +54,9 @@
       <div id='initializePopup' class='popupMessage'>
         <h2 id='popupTitle'>Initialization</h2>
         <p>Select Means Initialization Method</p>
-        <select>
-          <option>Random</option>
-          <option>K-Means++</option>
+        <select id='selectInitializer'>
+          <option value='random'>Random</option>
+          <option value='kmeanspp'>K-Means++</option>
         </select>
         <div id=popupForm><label>Number of Means</label><input id='numOfMeans'></div>
         <div class='btn btn-secondary' id='initialize_means' onclick='initializeMeansButton()'>Initialize Means</div>
@@ -67,7 +72,7 @@
         </div>
         
         <div class="chartContainer">
-          <h3>Original Labels</h3>
+          <h3>True Labels</h3>
           <canvas id='origChart'></canvas>
         </div>
       </div>
@@ -77,14 +82,18 @@
         <div class='btn btn-primary' id='initialize_means_popup'>Initialize Means</div>
         <div class='btn btn-primary' id='iterate'>Iterate one step</div>
       </div>
-      <!--
-      <div>
-        <h3>Sources</h3>
-        <p>
-          K-means++ initialization: 
-        </p>
+      <div class='metrics'>
+        <table>
+          <th>Metric</th>
+          <th>Value</th>
+          <tr>
+            <td>Rand Index</td><td id='randIndex'>0.0</td>
+          </tr>
+          <tr>
+            <!--<td>V-measure</td><td>0.0</td>-->
+          </tr>
+        </table>
       </div>
-      -->
     </div>
   </div>
   <div style="height:50px;">

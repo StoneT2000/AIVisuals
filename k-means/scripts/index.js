@@ -6,15 +6,25 @@ var means = [];
 var numPoints = 400;
 var numClusters = 3;
 var standardDeviation = 0.1;
+var dataRange = 0.1;
 var numMeans = 3;
 $(document).ready(function () {
   $(".popupMessage").css('display','none');
-  
+  $(".settings").css('display','none');
+  $("#normalSettings").css('display','block');
+  $("#selectGenerator").val('normal');
   //Initialize settings
   $("#numOfPoints").val(numPoints);
   $("#numOfClusters").val(numClusters);
   $("#numOfMeans").val(numMeans);
   $("#std").val(standardDeviation);
+  $("#range").val(dataRange);
+  
+  $("#closePopup").on('click', function(){
+    $("#popupMessageWrapper").css('display','none');
+    $("#pageCover").css('display','none');
+    $(".popupMessage").css('display','none');
+  });
   
   //generateSyntheticData(10).then(displayPredictedData(givenData,[0,1]));
   generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(originalData));
@@ -24,13 +34,23 @@ $(document).ready(function () {
     $("#pageCover").css('display','block');
     $("#generatePopup").css('display','block');
   })
-  
+  $("#selectGenerator").on('change', function(){
+    $(".settings").css('display','none');
+    switch($("#selectGenerator").val()) {
+      case 'normal':
+        $("#normalSettings").css('display','block');
+        break;
+      case 'random':
+        $("#randomSettings").css('display','block');
+        break;
+    }
+  });
   
   
   $("#iterate").on('click', function() {
     displayAndIterate(givenData,means);
-    //let acc = calculateAccuracy(givenData,originalData);
-    //$("#accuracy").text(acc.toFixed(4));
+    let ri = randIndex(givenData,originalData);
+    $("#randIndex").text(ri);
   });
   $("#initialize_means_popup").on('click', function(){
     $("#popupMessageWrapper").css('display','block');
@@ -41,7 +61,10 @@ $(document).ready(function () {
 function initializeMeansButton() {
   
   numMeans = parseInt($("#numOfMeans").val());
-  means = randomMeansInitialization(givenData, numMeans);
+  let type = $("#selectInitializer").val();
+  if (type == 'random') means = randomMeansInitialization(givenData, numMeans);
+  else if (type == 'kmeanspp') means = kmeansppInitialization(givenData,numMeans);
+    
   displayRawUnlabeledData(originalData);
   for (let i = 0; i < originalData.length; i++) {
     givenData[i].label = originalData[i].label;
@@ -57,35 +80,29 @@ function generateDataButton() {
   chart.destroy();
   numPoints = parseInt($("#numOfPoints").val());
   numClusters = parseInt($("#numOfClusters").val());
-  let genType = $("#selectGenerator").val()
-  if (genType == "Normal Distribution Around Center") {
-    
-  }
-  else if (genType == "Complete Random about Center within range") {
-    
-  }
+  let genType = $("#selectGenerator").val();
+  let spread = standardDeviation;
   standardDeviation = parseFloat($("#std").val());
-  generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(givenData));
+  dataRange = parseFloat($("#range").val());
+  if (genType == "normal") {
+    genType = normalCircleGen;
+    spread = standardDeviation;
+  }
+  else if (genType == "random") {
+    genType = randomCircleGen;
+    spread = dataRange;
+  }
+  
+  generateSyntheticData(numPoints, numClusters,spread, genType).then(displayRawUnlabeledData(givenData));
   displayOriginalLabels(originalData);
   unlabeledDataDisplayed = true;
   $("#popupMessageWrapper").css('display','none');
   $("#pageCover").css('display','none');
   $(".popupMessage").css('display','none');
 }
-function parseThis(a){
-  
-}
 
 var unlabeledDataDisplayed = true;
-function calculateAccuracy(data,originalData) {
-  let correct = 0;
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].label == originalData[i].label) {
-      correct += 1;
-    }
-  }
-  return correct/data.length;
-}
+
 //Display original labels in chart originalChart
 function displayOriginalLabels(originalData) {
   if (originalChart){
@@ -129,7 +146,21 @@ function displayOriginalLabels(originalData) {
               }
           }
       },
-      legend:legendOption
+      legend:legendOption,
+      scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 1
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 1
+                }
+            }]
+        }
     }
   });
 }
@@ -142,7 +173,6 @@ async function displayAndIterate(data,meansArr) {
   let res = await kMeansIterate(data,meansArr);
   data = res.data;
   means = res.means;
-  console.log(data,means);
   displayPredictedData(data,means);
 }
 
@@ -206,7 +236,21 @@ async function displayPredictedData(data, means){
                 }
             }
         },
-        legend:legendOption
+        legend:legendOption,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 1
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 1
+                }
+            }]
+        }
       }
     });
     unlabeledDataDisplayed = false;
@@ -277,6 +321,12 @@ async function displayRawUnlabeledData(data){
       legend:legendOption,
       scales: {
             yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 1
+                }
+            }],
+            xAxes: [{
                 ticks: {
                     suggestedMin: 0,
                     suggestedMax: 1
