@@ -26,14 +26,13 @@ $(document).ready(function () {
     $(".popupMessage").css('display','none');
   });
   
-  //generateSyntheticData(10).then(displayPredictedData(givenData,[0,1]));
   generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(originalData));
   displayOriginalLabels(originalData);
   $("#generate_random_popup").on('click', function(){
     $("#popupMessageWrapper").css('display','block');
     $("#pageCover").css('display','block');
     $("#generatePopup").css('display','block');
-  })
+  });
   $("#selectGenerator").on('change', function(){
     $(".settings").css('display','none');
     switch($("#selectGenerator").val()) {
@@ -54,7 +53,18 @@ $(document).ready(function () {
     $("#randIndex").text(ri);
   });
   $("#autoIterate").on('click', function(){
-    displayAndAutoIterate(givenData,means,1);
+    if (autoIterating == false){
+      if (means.length == 0) {
+        alert("Means not initialized yet");
+        return;
+      }
+      autoIterating = true;
+      displayAndAutoIterate(givenData,means,1);
+    }
+    else {
+      autoIterating = false;
+      $("#autoIterate").text("Auto Iterate Until Convergence");
+    }
   });
   $("#initialize_means_popup").on('click', function(){
     $("#popupMessageWrapper").css('display','block');
@@ -62,13 +72,17 @@ $(document).ready(function () {
     $("#initializePopup").css('display','block');
   });
 })
+function stopAllRunningProcesses() {
+  autoIterating = false;
+  $("#autoIterate").text("Auto Iterate Until Convergence");
+}
 function initializeMeansButton() {
   
   numMeans = parseInt($("#numOfMeans").val());
   let type = $("#selectInitializer").val();
   if (type == 'random') means = randomMeansInitialization(givenData, numMeans);
   else if (type == 'kmeanspp') means = kmeansppInitialization(givenData,numMeans);
-    
+  stopAllRunningProcesses();
   displayRawUnlabeledData(originalData);
   for (let i = 0; i < originalData.length; i++) {
     givenData[i].label = originalData[i].label;
@@ -96,6 +110,7 @@ function generateDataButton() {
     genType = randomCircleGen;
     spread = dataRange;
   }
+  stopAllRunningProcesses();
   convergence = false;
   generateSyntheticData(numPoints, numClusters,spread, genType).then(displayRawUnlabeledData(givenData));
   displayOriginalLabels(originalData);
@@ -185,18 +200,22 @@ async function displayAndIterate(data,meansArr) {
   displayPredictedData(data,means);
   updateAllMetrics(data,originalData);
 }
-
+var autoIterating = false;
 var iterationSpeed = 500; //time between each iteration in ms;
 async function displayAndAutoIterate(data, meansArr, n) {
-  if (convergence) {
+  if (convergence || autoIterating == false) {
+    return;
+  }
+  if (means.length == 0) {
+    alert("Means not initialized yet");
     return;
   }
   iterationSpeed = parseFloat($("#iterationSpeed").val());
   n += 1;
   displayAndIterate(data,meansArr).then(
-  setTimeout(function(){
-    displayAndAutoIterate(data,means,n);
-  },iterationSpeed)
+    setTimeout(function(){
+      displayAndAutoIterate(data,means,n);
+    },iterationSpeed)
   );
   
 }
