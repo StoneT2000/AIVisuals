@@ -35,10 +35,8 @@
   margin:10px;
   background-color: var(--white);
   width:100%;
-  border-radius:px;
+  border-radius:4px;
   position: relative;
-  
-  
   text-align: left;
 }
 .item:last-child {
@@ -76,6 +74,12 @@
 .item-btn-container {
   position: relative;
   text-align: left;
+}
+.item-btn-container a {
+  border:none;
+}
+.item-btn-container a:hover {
+  border:none;
 }
 @media only screen and (max-width:767px) {
   .title {
