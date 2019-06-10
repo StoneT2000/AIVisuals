@@ -132,6 +132,7 @@ function kmeansppInitialization(data, meanCount) {
 function dist2(x1,y1,x2,y2) {
   return Math.pow(x2-x1,2) + Math.pow(y2-y1,2);
 }
+
 //performs one iteration of k-means algorithm, updates data, means in place and returns data and the newMeans
 async function kMeansIterate(data, means) {
   //loop through all data points and assign each data point to nearest cluster
@@ -171,6 +172,8 @@ async function kMeansIterate(data, means) {
 function sqDist(x1,y1,x2,y2) {
   return Math.pow(x2-x1,2)+Math.pow(y2-y1,2);
 }
+
+//Performs Fisher Yates Shuffle on an array
 function FisherYatesShuffle(data) {
   for (let i = 0; i < data.length-1; i++) {
     let temp = data[i];
@@ -181,7 +184,7 @@ function FisherYatesShuffle(data) {
   }
   return data;
 }
-//shuffles two arrays of the same size in the same permutation
+//shuffles two arrays of the same size with the same permutation
 function FisherYatesShuffle2(data,data2) {
   for (let i = 0; i < data.length-1; i++) {
     let temp = data[i];

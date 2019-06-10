@@ -25,7 +25,6 @@ $(document).ready(function () {
     $("#pageCover").css('display','none');
     $(".popupMessage").css('display','none');
   });
-  
   generateSyntheticData(numPoints, numClusters,standardDeviation).then(displayRawUnlabeledData(originalData));
   displayOriginalLabels(originalData);
   $("#generate_random_popup").on('click', function(){

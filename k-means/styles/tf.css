@@ -43,6 +43,32 @@ body {
   font-family: 'dosis-light';
   src:url('../lib/fonts/Dosis-Light.ttf');
 }
+header {
+  height:3rem;
+  background-color:var(--red);
+  box-shadow: 0px 4px 4px 0px rgba(0,0,0,0.15);
+  color:white;
+  padding:0.25rem;
+  padding-left:1rem;
+}
+header a {
+  color:white !important;
+  border: none !important;
+}
+header a:hover{
+  text-decoration: none;
+}
+header h2 {
+  display: inline;
+  padding: 0 0.5rem 0 0.5rem;
+  transition: background-color 0.15s, color 0.15s;
+  border-radius:4px;
+  line-height: 2.5rem;
+}
+header h2:hover {
+  background-color:white;
+  color:var(--red);
+}
 input {
   text-align: center;
   width: 100px;
@@ -85,14 +111,14 @@ input:focus {
     background-color: var(--red);
   border-color: var(--red);
 }
-.container-fluid a {
+.container-fluid a, header a {
   font-family: 'dosis-light';
   color:#42a2e1;
   padding-bottom: 2px;
   border-bottom: 2px solid rgba(66,162,225,0.5);
   transition: color 0.15s, border-bottom 0.15s;
 }
-.container-fluid a:hover {
+.container-fluid a:hover, header a {
   text-decoration: none;
   color:#227cb7;
   border-bottom: 2px solid rgba(66,162,225,1);
